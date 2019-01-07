@@ -1,0 +1,31 @@
+<!--Copyright inMateriis 2018-->
+{% if quote_list %}
+    <table style="width:100%">
+        <tr>
+        <th>Quote ID</th>
+        <th>Client ID</th>
+        <th>Date Approved</th>
+        <th>Delivery Date</th>
+        <th>Referral</th>
+        <th>Number of Prints</th>
+        <th>User ID</th>
+        <th>Cost</th>
+        <th>Status</th>
+      </tr>
+        {% for quote in quote_list %}
+            <tr>
+            <th>{{ quote.id }}</th>
+            <th>{{ quote.client_id }}</th>
+            <th>{{ quote.date_time_code }}</th>
+            <th>{{ quote.date_time_code }}</th>
+            <th>{{ quote.referral_person }}</th>
+            <th> Field not defined in DB </th>
+            <th>{{ quote.user_id }}</th>
+            <th>{{ quote.cost }}</th>
+            <th>{{ quote.status }}</th>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No quotes are available.</p>
+{% endif %}

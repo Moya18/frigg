@@ -1,0 +1,44 @@
+<!--Copyright inMateriis 2018-->
+<!DOCTYPE html>
+
+<html>
+
+	
+	<body>
+
+	<form action="../createClient/" method="POST">
+    {% csrf_token %}
+  New Client:<br><br>
+  
+  Nombre:
+  <input type="text" name="name"><br><br>
+
+  Empresa:
+  <input type="text" name="company"><br><br>
+
+  Email:
+  <input type="text" name="email"><br><br>
+
+  Teléfono:
+  <input type="text" name="telephone"><br><br>
+
+  RFC:
+  <input type="text" name="rfc"><br>
+
+  Dirección (línea 1):
+  <input type="text" name="addressLine1"><br>
+  Dirección (línea 2):
+  <input type="text" name="addressLine2"><br>
+  Ciudad:
+  <input type="text" name="city"><br>
+  País:
+  <input type="text" name="country"><br>
+  CP:
+  <input type="text" name="zip"><br><br>
+
+  <input type="submit" value="Add Client">
+
+</form>
+	</body>
+	
+</html>
