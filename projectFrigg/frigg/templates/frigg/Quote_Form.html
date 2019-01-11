@@ -7,13 +7,13 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   Client:
-            <select id="formClient">
+            <select id="client">
             <option value="AASmith">Company A : A Smith</option>
             <option value="BBJones">Company B : B Jones</option>
           </select> <br> <br>
   
             Date:<br>
-                  <input type="date" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : '' ?>" />
+                  <input type="date" id="date" value="" />
           <br> <br>
   <button class="AddItem" type="button" onclick="addForm()">Añadir</button><br> <br>
     <body>
@@ -28,7 +28,7 @@
             </select> <br> <br>
     
               Date:<br>
-                    <input type="date" name="date" value="<?php echo isset($_POST['date']) ? $_POST['date'] : '' ?>" />
+                    <input type="date" name="date" value="" />
             <br> <br>
   
             Add Quote:<br><br>
@@ -105,7 +105,9 @@
   
       function hiddenFields(){
         forms = document.getElementsByTagName("FORM");
-        for (var i = 0; i < forms.length; i++) forms[i].submit();
+        for (var i = 0; i < forms.length; i++){
+          forms[i].submit();
+        }
       }
   </script>
     
