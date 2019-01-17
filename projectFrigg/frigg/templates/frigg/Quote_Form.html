@@ -7,13 +7,13 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   Client:
-            <select id="client">
+            <select id="client" onchange="modifyClientAndDate()">
             <option value="AASmith">Company A : A Smith</option>
             <option value="BBJones">Company B : B Jones</option>
           </select> <br> <br>
   
             Date:<br>
-                  <input type="date" id="date" value="" />
+                  <input type="date" id="date" onchange="modifyClientAndDate()"/>
           <br> <br>
   <button class="AddItem" type="button" onclick="addForm()">Añadir</button><br> <br>
     <body>
@@ -22,13 +22,13 @@
               {% csrf_token %}
   
               Client:
-              <select name="client">
+              <select name="client" class="client">
               <option value="AASmith">Company A : A Smith</option>
               <option value="BBJones">Company B : B Jones</option>
             </select> <br> <br>
     
               Date:<br>
-                    <input type="date" name="date" value="" />
+                    <input type="date" name="date" class="date"/>
             <br> <br>
   
             Add Quote:<br><br>
@@ -101,6 +101,25 @@
           clone.find('select').val('');
           clone.find('input[type=text]').val('');
           clone.appendTo("div");
+          var clients = document.getElementsByName('client');
+          clients.forEach(client => {
+            client.value = document.getElementById('client').value;
+          });
+          var dates = document.getElementsByName('date');
+          dates.forEach(date => {
+            date.value = document.getElementById('date').value;
+          });
+      }
+
+      function modifyClientAndDate(){
+        var clients = document.getElementsByName('client');
+          clients.forEach(client => {
+            client.value = document.getElementById('client').value;
+          });
+          var dates = document.getElementsByName('date');
+          dates.forEach(date => {
+            date.value = document.getElementById('date').value;
+          });
       }
   
       function hiddenFields(){
