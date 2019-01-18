@@ -63,6 +63,9 @@ def createQuote(request):
     #SEND CONFIRMATION EMAIL
     #send_email()
 
+    #run sheets file TEST
+    os.system("python frigg\sheets\GoogleTest.py")
+
     return render(request, 'frigg/thanks.html', {})
 
 def createClient(request):
