@@ -88,8 +88,14 @@ def Footer():
 
     return Out
     
+# date = Quote.objects.get(id = 10)
+# print(date)
+
+import datetime
+now = datetime.datetime.now()
+
 OutFile=Config()
-OutFile+=Heading("Bob Smith","Alan@Blam.com","1231111139","03/12/2018")
+OutFile+=Heading("Bob Smith","Alan@Blam.com","1231111139",now.strftime("%d/%m/%Y"))
 OutFile+=Table("Information","",True,["Print 1","1","100.00"],"5.00","55.00")
 OutFile+=Footer()
 min_latex = (r"\documentclass{article}"

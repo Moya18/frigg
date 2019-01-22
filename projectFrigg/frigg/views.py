@@ -22,26 +22,6 @@ def fillQuoteForm(request):
 def fillClientForm(request):
     return render(request, 'frigg/Client_Form.html', {})
 
-def pretty_request(request):
-    print('****************************************************************************')
-    print(request.scheme)
-    print('****************************************************************************')
-    print(request.path)
-    print('****************************************************************************')
-    print(request.path_info)
-    print('****************************************************************************')
-    print(request.method)
-    print('****************************************************************************')
-    print(request.encoding)
-    print('****************************************************************************')
-    print(request.content_type)
-    print('****************************************************************************')
-    print(request.content_params)
-    print('****************************************************************************')
-    print(request.COOKIES)
-    print('****************************************************************************')
-        
-
 def approveQuote(request):
     #GETTING READY...
     form = ApproveForm(request.POST)
@@ -56,10 +36,11 @@ def approveQuote(request):
     #SAVE
     job.save()
 
+    os.system("python frigg\pdf\JobMake.py")
+
     return render(request, 'frigg/thanks.html', {})
 
 def createQuote(request):
-    print(pretty_request(request))
 
     #GETTING READY...
     form = QuoteForm(request.POST, request.FILES)
@@ -98,6 +79,7 @@ def createQuote(request):
 
     #run sheets file TEST
     os.system("python frigg\sheets\GoogleTest.py")
+    os.system("python frigg\pdf\QuoteMake.py")
 
     return render(request, 'frigg/thanks.html', {})
 

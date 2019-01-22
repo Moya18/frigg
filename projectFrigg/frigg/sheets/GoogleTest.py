@@ -60,13 +60,14 @@ def gsheet2df(gsheet):
         df = pd.concat(all_data, axis=1)
         return df
 
-
+import datetime
+now = datetime.datetime.now()
 
 gsheet = get_google_sheet(SPREADSHEET_ID, RANGE_NAME)
 df = gsheet2df(gsheet)
 values = [
         [
-            328743873,400,300,200,100,
+            now.strftime("%d/%m/%Y"),400,300,200,100,
         ],
     ]
 
