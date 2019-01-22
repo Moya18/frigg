@@ -15,11 +15,6 @@ class QuoteForm(forms.Form):
     quantity = forms.CharField()
     delivery = forms.CharField()
     showCost = forms.CharField()
-    def __repr__(self):
-        return "QuoteForm()"
-    def clean(self):
-        cleaned_data = super(QuoteForm, self).clean()
-        return cleaned_data
 
 class ClientForm(forms.Form):
     name = forms.CharField()
@@ -32,8 +27,6 @@ class ClientForm(forms.Form):
     city = forms.CharField()
     country = forms.CharField()
     zip = forms.CharField()
-    def __repr__(self):
-        return "ClientForm()"
-    def clean(self):
-        cleaned_data = super(ClientForm, self).clean()
-        return cleaned_data
+
+class ApproveForm(forms.Form):
+    quoteID = forms.CharField()

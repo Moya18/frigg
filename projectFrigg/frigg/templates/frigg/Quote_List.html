@@ -11,18 +11,23 @@
         <th>User ID</th>
         <th>Cost</th>
         <th>Status</th>
+        <th>Approve</th>
       </tr>
         {% for quote in quote_list %}
             <tr>
-            <th>{{ quote.id }}</th>
-            <th>{{ quote.client_id }}</th>
-            <th>{{ quote.date_time_code }}</th>
-            <th>{{ quote.date_time_code }}</th>
-            <th>{{ quote.referral_person }}</th>
-            <th> Field not defined in DB </th>
-            <th>{{ quote.user_id }}</th>
-            <th>{{ quote.cost }}</th>
-            <th>{{ quote.status }}</th>
+                <form action="../approveQuote/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <th><input name="quoteID" style="text-align:center; border:0; font-weight: bold;" type="text" value="{{ quote.id }}" class="field left" readonly></th>
+                    <th>{{ quote.client_id }}</th>
+                    <th>{{ quote.date_time_code }}</th>
+                    <th>{{ quote.date_time_code }}</th>
+                    <th>{{ quote.referral_person }}</th>
+                    <th> Field not defined in DB </th>
+                    <th>{{ quote.user_id }}</th>
+                    <th>{{ quote.cost }}</th>
+                    <th>{{ quote.status }}</th>
+                    <th><input type="submit" value="Approve"></th>
+                </form>
             </tr>
         {% endfor %}
     </table>

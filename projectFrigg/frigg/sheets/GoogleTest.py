@@ -66,7 +66,7 @@ gsheet = get_google_sheet(SPREADSHEET_ID, RANGE_NAME)
 df = gsheet2df(gsheet)
 values = [
         [
-            00000000,400,300,200,100,
+            328743873,400,300,200,100,
         ],
     ]
 

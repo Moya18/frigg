@@ -55,9 +55,9 @@ class Instructions(models.Model):
     ip_address = models.IPAddressField
 
 class Job(models.Model):
-    quote_id = models.ForeignKey(Quote, on_delete=models.PROTECT)
-    date_time_code = models.DateTimeField
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    quote_id = models.ForeignKey(Quote, on_delete=models.PROTECT, null=True)
+    date_time_code = models.DateTimeField(null=True)
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
 class Flag(models.Model):
     flag_type = models.CharField(max_length=100)

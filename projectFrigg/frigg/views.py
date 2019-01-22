@@ -3,9 +3,9 @@ import os, sys, re
 from django.core.mail import send_mail
 from django.conf import settings
 
-from .models import Quote, Client
+from .models import Quote, Client, Job
 
-from .forms import QuoteForm, ClientForm
+from .forms import QuoteForm, ClientForm, ApproveForm
 
 def index(request):
     # try:
@@ -16,17 +16,50 @@ def index(request):
     # question = get_object_or_404(Question, pk=question_id)
     return render(request, 'frigg/index.html', {})
 
-def quoteList(request):
-    #quote = get_object_or_404(Quote, pk=quote_id)
-    return render(request, 'frigg/Quote_List.html', {})
-
 def fillQuoteForm(request):
     return render(request, 'frigg/Quote_Form.html', {})
 
 def fillClientForm(request):
     return render(request, 'frigg/Client_Form.html', {})
 
+def pretty_request(request):
+    print('****************************************************************************')
+    print(request.scheme)
+    print('****************************************************************************')
+    print(request.path)
+    print('****************************************************************************')
+    print(request.path_info)
+    print('****************************************************************************')
+    print(request.method)
+    print('****************************************************************************')
+    print(request.encoding)
+    print('****************************************************************************')
+    print(request.content_type)
+    print('****************************************************************************')
+    print(request.content_params)
+    print('****************************************************************************')
+    print(request.COOKIES)
+    print('****************************************************************************')
+        
+
+def approveQuote(request):
+    #GETTING READY...
+    form = ApproveForm(request.POST)
+    job = Job()
+    form.is_valid()
+    form = form.clean()
+    #FILL FIELDS
+    quote = Quote.objects.get(pk=form['quoteID'])
+    job.quote_id = quote
+    job.date_time_code = Quote.objects.get(pk=form['quoteID']).date_time_code
+
+    #SAVE
+    job.save()
+
+    return render(request, 'frigg/thanks.html', {})
+
 def createQuote(request):
+    print(pretty_request(request))
 
     #GETTING READY...
     form = QuoteForm(request.POST, request.FILES)
@@ -95,6 +128,11 @@ def getQuotes(request):
     quote_list = Quote.objects.all()
     context = {'quote_list': quote_list}
     return render(request, 'frigg/Quote_List.html', context)
+
+def getJobs(request):
+    job_list = Job.objects.all()
+    context = {'job_list': job_list}
+    return render(request, 'frigg/Job_List.html', context)
 
 def handle_uploaded_file(f, path):
     with open(path, 'wb+') as destination:
