@@ -32,9 +32,11 @@ def approveQuote(request):
     quote = Quote.objects.get(pk=form['quoteID'])
     job.quote_id = quote
     job.date_time_code = Quote.objects.get(pk=form['quoteID']).date_time_code
+    quote.status = 'approved'
 
     #SAVE
     job.save()
+    quote.save()
 
     os.system("python frigg\pdf\JobMake.py")
 

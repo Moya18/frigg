@@ -15,7 +15,7 @@
       </tr>
         {% for quote in quote_list %}
             <tr>
-                <form action="../approveQuote/" method="POST" enctype="multipart/form-data">
+                <form id="form" action="../approveQuote/" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <th><input name="quoteID" style="text-align:center; border:0; font-weight: bold;" type="text" value="{{ quote.id }}" class="field left" readonly></th>
                     <th>{{ quote.client_id }}</th>
@@ -26,7 +26,11 @@
                     <th>{{ quote.user_id }}</th>
                     <th>{{ quote.cost }}</th>
                     <th>{{ quote.status }}</th>
-                    <th><input type="submit" value="Approve"></th>
+                    {% if quote.status != 'approved' %}
+                    <th><button id="btn" onclick="approve()">Approve</button></th>
+                    {% else %}
+                    <th><button id="btn" onclick="approve()" disabled>Approve</button></th>
+                    {% endif %}
                 </form>
             </tr>
         {% endfor %}
@@ -34,3 +38,11 @@
 {% else %}
     <p>No quotes are available.</p>
 {% endif %}
+
+<script>
+    function approve(){
+        document.getElementById('btn').disabled = true;
+
+        document.getElementById('form').submit();
+    }
+</script>
