@@ -85,6 +85,7 @@
   
             Mostrar precio:
             <input type="text" id="showCost" name="showCost"><br><br>
+            <input type="hidden" id="hidden" name="hidden">
   
             Precio final (IVA incluido):<br>
             --------------------------------------------------------------------------------------------<br>
@@ -124,6 +125,7 @@
   
       function submitForms(){
         forms = document.getElementsByTagName("FORM");
+        document.getElementById('hidden').value = new Date();
         for (var i = 0; i < forms.length; i++){
           forms[i].submit();
         }

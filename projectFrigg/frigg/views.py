@@ -2,8 +2,9 @@ from django.shortcuts import get_object_or_404, render
 import os, sys, re
 from django.core.mail import send_mail
 from django.conf import settings
+from datetime import timedelta, datetime
 
-from .models import Quote, Client, Job
+from .models import Quote, Job
 
 from .forms import QuoteForm, ClientForm, ApproveForm
 
@@ -47,22 +48,26 @@ def createQuote(request):
     #GETTING READY...
     form = QuoteForm(request.POST, request.FILES)
     quote = Quote()
+    job = Job()
     form.is_valid()
     form = form.clean()
 
-    #FILL FIELDS
-    quote.client_id = Client.objects.get(name=form['client'])
-    quote.company = form['client']
-    quote.date_time_code = form['date']
+    #FILL JOB FIELDS
+    job.client = form['']
 
-    #CREATE DIRECTORY FOR FILES
-    try:                 #MOST CHANGE TO quote.user
-        os.mkdir('frigg/quote_models/' + quote.company)
-        os.mkdir('frigg/quote_models/' + quote.company + '/model')
-        os.mkdir('frigg/quote_models/' + quote.company + '/model_orientation')
-    except OSError:
-        pass
-    #END
+    #FILL QUOTE FIELDS
+    if(Quote.objects.get(key=form['hidden']).count() == 1):
+        quote = Quote.objects.get(key=form['hidden'])
+        print('**********************EXISTS**********************')
+    else:
+        quote.key = form['hidden']
+        quote.client = form['client']
+        quote.date_time_code = form['date']
+        quote.total_price = form['showCost']
+        quote.job_number = 1
+        quote.status = 'pending'
+        print('**********************DIDNT EXIST**********************')
+    
 
     path = 'frigg/quote_models/' + quote.company + '/model/' + request.FILES['printFile1'].name
     handle_uploaded_file(request.FILES['printFile1'], path)
@@ -72,6 +77,15 @@ def createQuote(request):
     quote.model_orientation_path = path
     quote.material = form['material']
     quote.status = 'pending'
+
+    #CREATE DIRECTORY FOR FILES
+    try:
+        os.mkdir('frigg/quote_models/' + quote.company)
+        os.mkdir('frigg/quote_models/' + quote.company + '/model')
+        os.mkdir('frigg/quote_models/' + quote.company + '/model_orientation')
+    except OSError:
+        pass
+    #END
 
     #SAVE
     quote.save()

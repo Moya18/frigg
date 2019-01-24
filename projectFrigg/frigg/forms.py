@@ -15,6 +15,7 @@ class QuoteForm(forms.Form):
     quantity = forms.CharField()
     delivery = forms.CharField()
     showCost = forms.CharField()
+    hidden = forms.CharField()
 
 class ClientForm(forms.Form):
     name = forms.CharField()

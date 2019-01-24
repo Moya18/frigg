@@ -33,21 +33,15 @@ class PrinterType(models.Model):
     material_options = models.CharField(max_length=100)
 
 class Quote(models.Model):
-    client_id = models.ForeignKey(Client, on_delete=models.PROTECT, null=True)
-    company = models.CharField(max_length=100, null=True)
-    type_of_print = models.CharField(max_length=20, null=True)
-    #def if_stock_what_design(self):
-    printer = models.ForeignKey(PrinterType, null=True, on_delete=models.PROTECT)
-    material = models.CharField(max_length=100, null=True)
-    time = models.IntegerField(null=True)
-    amount_of_material = models.IntegerField(null=True)
-    referral_person = models.CharField(max_length=100, null=True)
+    client = models.CharField(max_length=100, null=True)
     date_time_code = models.DateField(null=True)
-    user_id = models.ForeignKey(User, null=True, on_delete=models.PROTECT)
-    cost = models.IntegerField(null=True)
-    model_path = models.CharField(max_length=300, null=True)
-    model_orientation_path = models.CharField(max_length=300, null=True)
+    date_approved = models.DateField(null=True)
+    date_due = models.DateField(null=True)
+    total_price = models.IntegerField(null=True)
+    job_number = models.IntegerField(null=True)
+    jobs_completed = models.IntegerField(null=True)
     status = models.CharField(max_length=100, null=True)
+    key = models.CharField(max_length=300, null=True)
 
 class Instructions(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -55,9 +49,21 @@ class Instructions(models.Model):
     ip_address = models.IPAddressField
 
 class Job(models.Model):
+    client = models.CharField(max_length=100, null=True)
+    date_time_code = models.DateField(null=True)
+    model_path = models.CharField(max_length=300, null=True)
+    model_orientation_path = models.CharField(max_length=300, null=True)
+    material = models.CharField(max_length=300, null=True)
+    layers = models.CharField(max_length=300, null=True)
+    infill = models.CharField(max_length=300, null=True)
+    supports = models.CharField(max_length=300, null=True)
+    speed = models.CharField(max_length=300, null=True)
+    print_time = models.CharField(max_length=300, null=True)
+    weight = models.CharField(max_length=300, null=True)
+    number_copies = models.CharField(max_length=300, null=True)
+    date_due = models.DateField(null=True)
     quote_id = models.ForeignKey(Quote, on_delete=models.PROTECT, null=True)
-    date_time_code = models.DateTimeField(null=True)
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    status = models.CharField(max_length=100, null=True)
 
 class Flag(models.Model):
     flag_type = models.CharField(max_length=100)
