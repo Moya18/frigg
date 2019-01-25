@@ -44,7 +44,6 @@ def approveQuote(request):
     return render(request, 'frigg/thanks.html', {})
 
 def createQuote(request):
-
     #GETTING READY...
     form = QuoteForm(request.POST, request.FILES)
     quote = Quote()
@@ -52,43 +51,55 @@ def createQuote(request):
     form.is_valid()
     form = form.clean()
 
-    #FILL JOB FIELDS
-    job.client = form['']
-
     #FILL QUOTE FIELDS
-    if(Quote.objects.get(key=form['hidden']).count() == 1):
+    if(Quote.objects.filter(key=form['hidden']).count() == 1):
+        print('***************************EXISTS*************')
         quote = Quote.objects.get(key=form['hidden'])
-        print('**********************EXISTS**********************')
+        Quote.objects.get(key=form['hidden']).job_number = Quote.objects.get(key=form['hidden']).job_number + 1
+        print(Quote.objects.get(key=form['hidden']).job_number + 1, 'djbsndvjdbsjsdblkdsnlkdnvlksdnvlkdsnlkdsndslknd')
     else:
+        print('***************************DIDNT EXIST*************')
         quote.key = form['hidden']
         quote.client = form['client']
         quote.date_time_code = form['date']
         quote.total_price = form['showCost']
         quote.job_number = 1
         quote.status = 'pending'
-        print('**********************DIDNT EXIST**********************')
     
-
-    path = 'frigg/quote_models/' + quote.company + '/model/' + request.FILES['printFile1'].name
-    handle_uploaded_file(request.FILES['printFile1'], path)
-    quote.model_path = path
-    path = 'frigg/quote_models/' + quote.company + '/model_orientation/' + request.FILES['orientationFile1'].name
-    handle_uploaded_file(request.FILES['orientationFile1'], path)
-    quote.model_orientation_path = path
-    quote.material = form['material']
-    quote.status = 'pending'
+    #FILL JOB FIELDS
+    job.client = form['client']
+    job.date_time_code = form['date']
+    job.material = form['material']
+    job.layers = form['layerThickness']
+    job.infill = form['infill']
+    job.supports = form['supports']
+    job.speed = form['speed']
+    job.print_time = form['time']
+    job.weight = form['weight']
+    job.number_copies = form['quantity']
+    job.quote_id = quote
+    job.status = 'pending'
 
     #CREATE DIRECTORY FOR FILES
     try:
-        os.mkdir('frigg/quote_models/' + quote.company)
-        os.mkdir('frigg/quote_models/' + quote.company + '/model')
-        os.mkdir('frigg/quote_models/' + quote.company + '/model_orientation')
+        os.mkdir('frigg/job_models/' + job.client)
+        os.mkdir('frigg/job_models/' + job.client + '/model')
+        os.mkdir('frigg/job_models/' + job.client + '/model_orientation')
     except OSError:
         pass
     #END
 
+    path = 'frigg/job_models/' + job.client + '/model/' + request.FILES['printFile1'].name
+    handle_uploaded_file(request.FILES['printFile1'], path)
+    job.model_path = path
+
+    path = 'frigg/job_models/' + job.client + '/model_orientation/' + request.FILES['orientationFile1'].name
+    handle_uploaded_file(request.FILES['orientationFile1'], path)
+    job.model_orientation_path = path
+
     #SAVE
     quote.save()
+    job.save()
 
     #SEND CONFIRMATION EMAIL
     #send_email()

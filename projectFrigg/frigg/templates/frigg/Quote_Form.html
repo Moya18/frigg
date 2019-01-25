@@ -98,9 +98,9 @@
   <script>
       function addForm(){
           clone = $('#form').clone();
-          clone.find('input[type=file]').val('');
-          clone.find('select').val('');
-          clone.find('input[type=text]').val('');
+          // clone.find('input[type=file]').val('');
+          // clone.find('select').val('');
+          // clone.find('input[type=text]').val('');
           clone.appendTo("div");
           var clients = document.getElementsByName('client');
           clients.forEach(client => {
