@@ -38,7 +38,7 @@ class Quote(models.Model):
     date_approved = models.DateField(null=True)
     date_due = models.DateField(null=True)
     total_price = models.IntegerField(null=True)
-    job_number = models.IntegerField(null=True)
+    job_number = models.CharField(max_length=100, null=True)
     jobs_completed = models.IntegerField(null=True)
     status = models.CharField(max_length=100, null=True)
     key = models.CharField(max_length=300, null=True)

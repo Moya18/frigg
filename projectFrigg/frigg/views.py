@@ -46,19 +46,17 @@ def approveQuote(request):
 def createQuote(request):
     #GETTING READY...
     form = QuoteForm(request.POST, request.FILES)
-    quote = Quote()
-    job = Job()
     form.is_valid()
     form = form.clean()
+    quote, created = Quote.objects.get_or_create(key=form['hidden'])
+    job = Job()
 
     #FILL QUOTE FIELDS
-    if(Quote.objects.filter(key=form['hidden']).count() == 1):
-        print('***************************EXISTS*************')
-        quote = Quote.objects.get(key=form['hidden'])
-        Quote.objects.get(key=form['hidden']).job_number = Quote.objects.get(key=form['hidden']).job_number + 1
-        print(Quote.objects.get(key=form['hidden']).job_number + 1, 'djbsndvjdbsjsdblkdsnlkdnvlksdnvlkdsnlkdsndslknd')
+    if(not created):
+        number = int(quote.job_number)
+        number += 1
+        quote.job_number = str(number)
     else:
-        print('***************************DIDNT EXIST*************')
         quote.key = form['hidden']
         quote.client = form['client']
         quote.date_time_code = form['date']
@@ -77,7 +75,7 @@ def createQuote(request):
     job.print_time = form['time']
     job.weight = form['weight']
     job.number_copies = form['quantity']
-    job.quote_id = quote
+    job.quote_id = Quote.objects.get(key=form['hidden'])
     job.status = 'pending'
 
     #CREATE DIRECTORY FOR FILES
