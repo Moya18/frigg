@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-import os, sys, re
+import os, sys, re, time
 from django.core.mail import send_mail
 from django.conf import settings
 from datetime import timedelta, datetime
@@ -26,17 +26,19 @@ def fillClientForm(request):
 def approveQuote(request):
     #GETTING READY...
     form = ApproveForm(request.POST)
-    job = Job()
     form.is_valid()
     form = form.clean()
+    quote = Quote.objects.get(pk = form['quoteID'])
     #FILL FIELDS
-    quote = Quote.objects.get(pk=form['quoteID'])
-    job.quote_id = quote
-    job.date_time_code = Quote.objects.get(pk=form['quoteID']).date_time_code
     quote.status = 'approved'
+    for job in Job.objects.filter(key = quote.key):
+        job.quote_id = quote
+        job.date_time_code = Quote.objects.get(pk=form['quoteID']).date_time_code
+        job.status = 'pending'
+        job.save()
+        quote.job_number = str(int(quote.job_number) + 1)
 
     #SAVE
-    job.save()
     quote.save()
 
     os.system("python frigg\pdf\JobMake.py")
@@ -52,17 +54,13 @@ def createQuote(request):
     job = Job()
 
     #FILL QUOTE FIELDS
-    if(not created):
-        number = int(quote.job_number)
-        number += 1
-        quote.job_number = str(number)
-    else:
+    if(created):
         quote.key = form['hidden']
         quote.client = form['client']
         quote.date_time_code = form['date']
         quote.total_price = form['showCost']
-        quote.job_number = 1
-        quote.status = 'pending'
+        quote.job_number = 0
+        quote.status = 'on hold'
     
     #FILL JOB FIELDS
     job.client = form['client']
@@ -75,8 +73,8 @@ def createQuote(request):
     job.print_time = form['time']
     job.weight = form['weight']
     job.number_copies = form['quantity']
-    job.quote_id = Quote.objects.get(key=form['hidden'])
-    job.status = 'pending'
+    job.status = 'on hold'
+    job.key = form['hidden']
 
     #CREATE DIRECTORY FOR FILES
     try:
@@ -98,6 +96,14 @@ def createQuote(request):
     #SAVE
     quote.save()
     job.save()
+
+    #DELETE NOT USEFUL QUOTES AND CALCULATE JOB NUMBER
+    quotesCreated = Quote.objects.filter(key = form['hidden'])
+    iterQuotesCreated = iter(quotesCreated)
+    if(len(quotesCreated) > 1):
+        next(iterQuotesCreated)
+        for quoteCreated in iterQuotesCreated:
+            quoteCreated.delete()
 
     #SEND CONFIRMATION EMAIL
     #send_email()

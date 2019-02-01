@@ -125,16 +125,14 @@
   
       function submitForms(){
         forms = document.getElementsByTagName("FORM");
-        document.getElementById('hidden').value = new Date();
-        forms[0].submit();
-        setTimeout(function(){ return undefined }, 2000);
-        forms[1].submit();
-        setTimeout(function(){ return undefined }, 2000);
-        forms[2].submit();
-        // setTimeout(function(){ return undefined }, 2000);
-        // for (var i = 1; i < forms.length; i++){
-        //   forms[i].submit();
-        // }
+        elements = document.getElementsByName('hidden');
+        date = new Date();
+        elements.forEach(element => {
+          element.value = date;
+        });
+        for (var i = 0; i < forms.length; i++){
+          forms[i].submit();
+        }
       }
   </script>
     

@@ -64,6 +64,7 @@ class Job(models.Model):
     date_due = models.DateField(null=True)
     quote_id = models.ForeignKey(Quote, on_delete=models.PROTECT, null=True)
     status = models.CharField(max_length=100, null=True)
+    key = models.CharField(max_length=300, null=True)
 
 class Flag(models.Model):
     flag_type = models.CharField(max_length=100)

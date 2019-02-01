@@ -16,20 +16,22 @@
           <th>User</th> 	
         </tr>
         {% for job in job_list %}
-            <tr>
-                <th>{{ job.id }}</th>
-                <th>{{ job.quote_id }}</th>
-                <th>NA</th>	
-                <th>NA</th>
-                <th>NA</th> 	
-                <th>NA</th> 
-                <th>NA</th> 
-                <th>NA</th> 
-                <th>NA</th>
-                <th>NA</th>	
-                <th>NA</th>	
-                <th>NA</th> 
-            </tr>
+            {% if job.status != 'on hold' %}
+                <tr>
+                    <th>{{ job.id }}</th>
+                    <th>{{ job.quote_id }}</th>
+                    <th>NA</th>	
+                    <th>NA</th>
+                    <th>NA</th> 	
+                    <th>NA</th> 
+                    <th>NA</th> 
+                    <th>NA</th> 
+                    <th>NA</th>
+                    <th>NA</th>	
+                    <th>NA</th>	
+                    <th>NA</th> 
+                </tr>
+            {% endif %}
         {% endfor %}
       </table>
 {% else %}
