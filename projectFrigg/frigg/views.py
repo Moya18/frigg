@@ -5,8 +5,9 @@ from django.conf import settings
 from datetime import timedelta, datetime
 
 from .models import Quote, Job
-
 from .forms import QuoteForm, ClientForm, ApproveForm
+from .pdf import JobMake, QuoteMake
+from .sheets import GoogleTest
 
 def index(request):
     # try:
@@ -41,7 +42,8 @@ def approveQuote(request):
     #SAVE
     quote.save()
 
-    os.system("python frigg\pdf\JobMake.py")
+    JobMake.run(quote.id, quote.date_time_code)
+    #os.system("python frigg\pdf\JobMake.py")
 
     return render(request, 'frigg/thanks.html', {})
 
@@ -109,8 +111,10 @@ def createQuote(request):
     #send_email()
 
     #run sheets file TEST
-    os.system("python frigg\sheets\GoogleTest.py")
-    os.system("python frigg\pdf\QuoteMake.py")
+    #GoogleTest.run()
+    QuoteMake.run(quote.id, quote.date_time_code, quote.client)
+    # os.system("python frigg\sheets\GoogleTest.py")
+    # os.system("python frigg\pdf\QuoteMake.py")
 
     return render(request, 'frigg/thanks.html', {})
 

@@ -63,17 +63,18 @@ def gsheet2df(gsheet):
 import datetime
 now = datetime.datetime.now()
 
-gsheet = get_google_sheet(SPREADSHEET_ID, RANGE_NAME)
-df = gsheet2df(gsheet)
-values = [
-        [
-            now.strftime("%d/%m/%Y"),400,300,200,100,
-        ],
-    ]
+def run():
+    gsheet = get_google_sheet(SPREADSHEET_ID, RANGE_NAME)
+    df = gsheet2df(gsheet)
+    values = [
+            [
+                now.strftime("%d/%m/%Y"),400,300,200,100,
+            ],
+        ]
 
-Body = {
-    'values' : values,
-    }
-loadToGoogleSheets(SPREADSHEET_ID, RANGE_NAME,Body)
-print('Dataframe size = ', df.shape)
-print(df.head())
+    Body = {
+        'values' : values,
+        }
+    loadToGoogleSheets(SPREADSHEET_ID, RANGE_NAME,Body)
+    print('Dataframe size = ', df.shape)
+    print(df.head())

@@ -56,15 +56,17 @@ def Footer():
 import datetime
 now = datetime.datetime.now()
 
-OutFile=Config()
-OutFile+=Heading("00000000","00000000","00000000",now.strftime("%d/%m/%Y"))
-OutFile+=Table("ABS","Blanco","0.01 mm","Turbo","20","30")
-OutFile+=Footer()
+def run(job_id, date):
+    OutFile=Config()
+    # OutFile+=Heading("00000000","00000000","00000000",now.strftime("%d/%m/%Y"))
+    OutFile+=Heading(job_id,"00000000","00000000", date)
+    OutFile+=Table("ABS","Blanco","0.01 mm","Turbo","20","30")
+    OutFile+=Footer()
 
 
-with open("Job.tex", "w") as text_file:
-    
-    text_file.write(OutFile)
-os.system("pdflatex job.tex")
-#print latex.is_available()
+    with open("Job.tex", "w") as text_file:
+        
+        text_file.write(OutFile)
+    os.system("pdflatex job.tex")
+    #print latex.is_available()
 
