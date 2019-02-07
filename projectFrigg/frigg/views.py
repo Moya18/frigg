@@ -43,7 +43,6 @@ def approveQuote(request):
     quote.save()
 
     JobMake.run(quote.id, quote.date_time_code)
-    #os.system("python frigg\pdf\JobMake.py")
 
     return render(request, 'frigg/thanks.html', {})
 
@@ -112,9 +111,9 @@ def createQuote(request):
 
     #run sheets file TEST
     #GoogleTest.run()
-    QuoteMake.run(quote.id, quote.date_time_code, quote.client)
+    QuoteMake.run(quote.id, quote.date_time_code, quote.client, form['material'], form['layerThickness'], form['infill'], form['supports'], form['speed'], 
+    form['time'], form['weight'], form['quantity'], quote.date_due)
     # os.system("python frigg\sheets\GoogleTest.py")
-    # os.system("python frigg\pdf\QuoteMake.py")
 
     return render(request, 'frigg/thanks.html', {})
 

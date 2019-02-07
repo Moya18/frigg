@@ -100,7 +100,7 @@ def Footer():
 
     return Out
 
-def run(quote_id, date, company):
+def run(quote_id, date, company, material, layers, infill, supports, speed, print_time, weight, number_copies, date_due):
     #Quote_Number="00000001"
     Quote_Number = quote_id
     # Day="31"
@@ -118,7 +118,7 @@ def run(quote_id, date, company):
     Tel="3311110102"
     Deadline="14"
 
-    Prints=[["Peek","0.1","Default",[["Cage",200,2],["Skull Plate",2500,1]]],["ABS","0.05","Blue",[["Handle",50,10]]]]
+    Prints=[["Peek","0.1","Default",[["Cage",200,2],["Skull Plate",2500,1]]],[material,"0.05","Blue",[["Handle",50,10]]]]
 
     OutFile=Config()
     OutFile+=Heading(Quote_Number,Day,Month,Year,Deadline,Name,Company,Email,RFC,Address,Tel)
