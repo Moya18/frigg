@@ -60,7 +60,7 @@ def Table(Prints,IVA):
     #For each Setting
     Total=0
     for Setting in range (len(Prints)):        
-        Out+=r"\item[$\bullet$] Impresi\'on "+str(Prints[Setting][0])+r" Resoluci\'on "+str(Prints[Setting][1])+r"mm "+str(Prints[Setting][2])+r" & & &\\" + "\n"
+        Out+=r"\item[$\bullet$] Impresi\'on "+str(Prints[Setting][0])+r" Resoluci\'on "+str(Prints[Setting][1])+r" "+str(Prints[Setting][2])+r" & & &\\" + "\n"
         for Item in range (len(Prints[Setting][3])):
             Total+=Prints[Setting][3][Item][1]*Prints[Setting][3][Item][2]
             Out+=r"\item[$\circ$] "+str(Prints[Setting][3][Item][0])+r" &\$"+str(Prints[Setting][3][Item][1])+r" &"+str(Prints[Setting][3][Item][2])+r" &\$"+str(Prints[Setting][3][Item][1]*Prints[Setting][3][Item][2])+r"\\" + "\n" 
@@ -100,25 +100,26 @@ def Footer():
 
     return Out
 
-def run(quote_id, date, company, material, layers, infill, supports, speed, print_time, weight, number_copies, date_due):
+def run(quote_client, quote_id, date, Prints):
     #Quote_Number="00000001"
     Quote_Number = quote_id
-    # Day="31"
-    # Month="01"
-    # Year="19"
+    # # Day="31"
+    # # Month="01"
+    # # Year="19"
     Day = str(date).split('-')[2]
     Month = str(date).split('-')[1]
     Year = str(date).split('-')[0]
     Name="Bob Smith"
-    # Company="Smith Inc"
-    Company = company
+    Company="Smith Inc"
+    #Company = company
     Email="B.Smith@SInc.com"
     RFC="ROSX989232"
     Address="The House, TownsVile, Mexico"
     Tel="3311110102"
     Deadline="14"
 
-    Prints=[["Peek","0.1","Default",[["Cage",200,2],["Skull Plate",2500,1]]],[material,"0.05","Blue",[["Handle",50,10]]]]
+    #Setup0=[Material0,Resolution0,colour0[File0_0,Cost0_0,Number0_0],[File0_1,cost0_1,Number0_1]]
+    #Prints=[["Peek","0.1","Default",[["Cage",200,2],["Skull Plate",2500,1]]],[material,"0.05","Blue",[["Handle",50,10]]]]
 
     OutFile=Config()
     OutFile+=Heading(Quote_Number,Day,Month,Year,Deadline,Name,Company,Email,RFC,Address,Tel)
@@ -126,8 +127,14 @@ def run(quote_id, date, company, material, layers, infill, supports, speed, prin
     OutFile+=Footer()
 
 
-    with open("Quote.tex", "w") as text_file:
+    with open("Quote_" + str(quote_id) + ".tex", "w") as text_file:
         
         text_file.write(OutFile)
-    os.system("pdflatex Quote.tex")
+    os.system("pdflatex " + "Quote_" + str(quote_id) + ".tex")
+    mainPath = os.sys.path[0]
+    os.rename(mainPath + '/' + "Quote_" + str(quote_id) + ".pdf", mainPath + '/frigg/jobs/' + quote_client + '/pdf/' + "Quote_" + str(quote_id) + ".pdf")
+    os.remove("Quote_" + str(quote_id) + ".aux")
+    os.remove("Quote_" + str(quote_id) + ".log")
+    os.remove("Quote_" + str(quote_id) + ".out")
+    os.remove("Quote_" + str(quote_id) + ".tex")
     #print latex.is_available()

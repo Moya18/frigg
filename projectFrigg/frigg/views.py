@@ -47,6 +47,7 @@ def approveQuote(request):
     return render(request, 'frigg/thanks.html', {})
 
 def createQuote(request):
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     #GETTING READY...
     form = QuoteForm(request.POST, request.FILES)
     form.is_valid()
@@ -60,7 +61,7 @@ def createQuote(request):
         quote.client = form['client']
         quote.date_time_code = form['date']
         quote.total_price = form['showCost']
-        quote.job_number = 0
+        quote.job_number = form['jobs']
         quote.status = 'on hold'
     
     #FILL JOB FIELDS
@@ -79,18 +80,19 @@ def createQuote(request):
 
     #CREATE DIRECTORY FOR FILES
     try:
-        os.mkdir('frigg/job_models/' + job.client)
-        os.mkdir('frigg/job_models/' + job.client + '/model')
-        os.mkdir('frigg/job_models/' + job.client + '/model_orientation')
+        os.mkdir('frigg/jobs/' + job.client)
+        os.mkdir('frigg/jobs/' + job.client + '/model')
+        os.mkdir('frigg/jobs/' + job.client + '/model_orientation')
+        os.mkdir('frigg/jobs/' + job.client + '/pdf')
     except OSError:
         pass
     #END
 
-    path = 'frigg/job_models/' + job.client + '/model/' + request.FILES['printFile1'].name
+    path = 'frigg/jobs/' + job.client + '/model/' + request.FILES['printFile1'].name
     handle_uploaded_file(request.FILES['printFile1'], path)
     job.model_path = path
 
-    path = 'frigg/job_models/' + job.client + '/model_orientation/' + request.FILES['orientationFile1'].name
+    path = 'frigg/jobs/' + job.client + '/model_orientation/' + request.FILES['orientationFile1'].name
     handle_uploaded_file(request.FILES['orientationFile1'], path)
     job.model_orientation_path = path
 
@@ -111,8 +113,20 @@ def createQuote(request):
 
     #run sheets file TEST
     #GoogleTest.run()
-    QuoteMake.run(quote.id, quote.date_time_code, quote.client, form['material'], form['layerThickness'], form['infill'], form['supports'], form['speed'], 
-    form['time'], form['weight'], form['quantity'], quote.date_due)
+    # if(int(quote.job_number) == int(form['jobs'])):
+    #     jobs = []
+    #     jobsCreated = Job.objects.filter(key = form['hidden'])
+    #     for job in jobsCreated:
+    #         array = []
+    #         array.append(job.material)
+    #         array.append(job.layers)
+    #         array.append("colour")
+    #         array1 = []
+    #         array2 = [request.FILES['printFile1'], int(form['showCost']), int(form['quantity'])]
+    #         array1.append(array2)
+    #         array.append(array1)
+    #         jobs.append(array)
+    #     QuoteMake.run(quote.client, quote.id, quote.date_time_code, jobs)
     # os.system("python frigg\sheets\GoogleTest.py")
 
     return render(request, 'frigg/thanks.html', {})
