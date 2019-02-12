@@ -4,8 +4,41 @@
 
   <html>
   <head>
+    <style>
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #333;
+        }
+        
+        li {
+          float: left;
+        }
+        
+        li a {
+          display: block;
+          color: white;
+          text-align: center;
+          padding: 14px 16px;
+          text-decoration: none;
+        }
+        
+        li a:hover {
+          background-color: #111;
+        }
+        </style>
+
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
+  <ul>
+      <li><a class="active" href="../fillQuoteForm">Fill Quote</a></li>
+      <li><a href="../getQuotes">Quote List</a></li>
+      <li><a href="../getJobs">Job List</a></li>
+      <li><a href="../fillClientForm">Create Client</a></li>
+  </ul>
+  <br><br>
   Client:
             <select id="client" onchange="modifyClientAndDate()">
             <option value="AASmith">Company A : A Smith</option>
@@ -18,6 +51,7 @@
           Add Quote:<br><br>
   <button class="AddItem" type="button" onclick="addForm()">Añadir</button><br> <br>
     <body>
+
     <div id="forms">
           <form action="../createQuote/" method="POST" id="form" enctype="multipart/form-data">
               {% csrf_token %}

@@ -10,12 +10,6 @@ from .pdf import JobMake, QuoteMake
 from .sheets import GoogleTest
 
 def index(request):
-    # try:
-    #     question = Question.objects.get(pk=question_id)
-    # except Question.DoesNotExist:
-    #     raise Http404("Question does not exist")
-    #OR
-    # question = get_object_or_404(Question, pk=question_id)
     return render(request, 'frigg/index.html', {})
 
 def fillQuoteForm(request):

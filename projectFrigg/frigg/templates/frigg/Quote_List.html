@@ -1,15 +1,51 @@
 <!--Copyright inMateriis 2018-->
+<head>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+        
+        li {
+            float: left;
+        }
+        
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
+</head>
+
+<body>
+<ul>
+    <li><a class="active" href="../fillQuoteForm">Fill Quote</a></li>
+    <li><a href="../getQuotes">Quote List</a></li>
+    <li><a href="../getJobs">Job List</a></li>
+    <li><a href="../fillClientForm">Create Client</a></li>
+</ul>
+
 {% if quote_list %}
     <table style="width:100%">
         <tr>
         <th>Quote ID</th>
-        <th>Client ID</th>
+        <th>Client</th>
         <th>Date Approved</th>
         <th>Delivery Date</th>
-        <th>Referral</th>
-        <th>Number of Prints</th>
-        <th>User ID</th>
-        <th>Cost</th>
+        <th>Date due</th>
+        <th>Total price</th>
+        <th>Jobs</th>
+        <th>Jobs completed</th>
         <th>Status</th>
         <th>Approve</th>
       </tr>
@@ -18,13 +54,13 @@
                 <form id="form" action="../approveQuote/" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <th><input name="quoteID" style="text-align:center; border:0; font-weight: bold;" type="text" value="{{ quote.id }}" class="field left" readonly></th>
-                    <th>{{ quote.client_id }}</th>
+                    <th>{{ quote.client }}</th>
                     <th>{{ quote.date_time_code }}</th>
                     <th>{{ quote.date_time_code }}</th>
-                    <th>{{ quote.referral_person }}</th>
-                    <th> Field not defined in DB </th>
-                    <th>{{ quote.user_id }}</th>
-                    <th>{{ quote.cost }}</th>
+                    <th>{{ quote.date_time_code }}</th>
+                    <th>{{ quote.total_price }}</th>
+                    <th>{{ quote.job_number }}</th>
+                    <th>{{ quote.jobs_completed }}</th>
                     <th>{{ quote.status }}</th>
                     {% if quote.status != 'approved' %}
                     <th><button id="btn" onclick="approve()">Approve</button></th>
@@ -38,7 +74,7 @@
 {% else %}
     <p>No quotes are available.</p>
 {% endif %}
-
+</body>
 <script>
     function approve(){
         document.getElementById('btn').disabled = true;
