@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-import os, sys, re, time
+import os, sys, re, time, json, codecs
 from django.core.mail import send_mail
 from django.conf import settings
 from datetime import timedelta, datetime
@@ -41,66 +41,170 @@ def approveQuote(request):
     return render(request, 'frigg/thanks.html', {})
 
 def createQuote(request):
-    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    #GETTING READY...
-    form = QuoteForm(request.POST, request.FILES)
-    form.is_valid()
-    form = form.clean()
-    quote, created = Quote.objects.get_or_create(key=form['hidden'])
+    data = json.loads(request.body)
+    fields = 18
+    job_number = int(len(data) / fields) #IMPORTANT!!! NUMBER OF FIELDS IN EACH FORM, CHANGE IF FIELDS ARE ADDED OR SUBSTRACTED
+
+    #GETTING READY
+    quote = Quote()
     job = Job()
-
-    #FILL QUOTE FIELDS
-    if(created):
-        quote.key = form['hidden']
-        quote.client = form['client']
-        quote.date_time_code = form['date']
-        quote.total_price = form['showCost']
-        quote.job_number = form['jobs']
-        quote.status = 'on hold'
     
-    #FILL JOB FIELDS
-    job.client = form['client']
-    job.date_time_code = form['date']
-    job.material = form['material']
-    job.layers = form['layerThickness']
-    job.infill = form['infill']
-    job.supports = form['supports']
-    job.speed = form['speed']
-    job.print_time = form['time']
-    job.weight = form['weight']
-    job.number_copies = form['quantity']
-    job.status = 'on hold'
-    job.key = form['hidden']
+    client = data[1]['value']
+    date = data[2]['value']
+    hidden = data[13]['value']
 
-    #CREATE DIRECTORY FOR FILES
-    try:
-        os.mkdir('frigg/jobs/' + job.client)
-        os.mkdir('frigg/jobs/' + job.client + '/model')
-        os.mkdir('frigg/jobs/' + job.client + '/model_orientation')
-        os.mkdir('frigg/jobs/' + job.client + '/pdf')
-    except OSError:
-        pass
-    #END
+    quote.client = client
+    quote.date_time_code = date
+    quote.date_approved = date #STILL NEEDS TO BE MODIFIED
+    quote.date_due = date #STILL NEEDS TO BE MODIFIED
+    quote.total_price = data[12]['value']
+    quote.job_number = job_number
+    quote.jobs_completed = 0
+    quote.status = 'on hold'
+    quote.key = hidden
 
-    path = 'frigg/jobs/' + job.client + '/model/' + request.FILES['printFile1'].name
-    handle_uploaded_file(request.FILES['printFile1'], path)
-    job.model_path = path
-
-    path = 'frigg/jobs/' + job.client + '/model_orientation/' + request.FILES['orientationFile1'].name
-    handle_uploaded_file(request.FILES['orientationFile1'], path)
-    job.model_orientation_path = path
-
-    #SAVE
     quote.save()
-    job.save()
 
-    #DELETE NOT USEFUL QUOTES AND CALCULATE JOB NUMBER
-    quotesCreated = Quote.objects.filter(key = form['hidden'])
-    iterQuotesCreated = iter(quotesCreated)
-    if(len(quotesCreated) > 1):
-        next(iterQuotesCreated)
-        for quoteCreated in iterQuotesCreated:
-            quoteCreated.delete()
+    for i in range(job_number):
+        x = i * fields #ITERATION NUMBER TO SEPARATE FORMS
+        #ORDER OF FIELDS ARE IMPORTANT!!
+        material = data[x + 3]['value']
+        layerThickness = data[x + 4]['value']
+        infill = data[x + 5]['value']
+        supports = data[x + 6]['value']
+        speed = data[x + 7]['value']
+        print_time = data[x + 8]['value']
+        weight = data[x + 9]['value']
+        quantity = data[x + 10]['value']
+        deliveryDate = data[x + 11]['value']
+        cost = data[x + 12]['value']
+        printFile = data[x + 14]['value'].split('\\')[-1]
+        orientationFile = data[x + 15]['value'].split('\\')[-1]
+        printFileData = data[x + 16]['value']
+        orientationFileData = data[x + 17]['value']
+
+        #CREATE DIRECTORY FOR FILES
+        try:
+            os.mkdir('frigg/quotes/')
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id))
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client)
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs')
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i))
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/model')
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/model_orientation')
+        except OSError:
+            pass
+        try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/pdf')
+        except OSError:
+            pass
+        #END
+
+        model_path = 'frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/model/' + printFile
+        handle_uploaded_file(printFileData, model_path)
+        model_orientation_path = 'frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/model_orientation/' + orientationFile
+        handle_uploaded_file(orientationFileData, model_orientation_path)
+
+        job.client = client
+        job.date_time_code = date
+        job.model_path = model_path
+        job.model_orientation_path = model_orientation_path
+        job.material = material
+        job.layers = layerThickness
+        job.infill = infill
+        job.supports = supports
+        job.speed = speed
+        job.print_time = print_time
+        job.weight = weight
+        job.number_copies = quantity
+        job.date_due = date
+        job.quote_id = quote
+        job.status = 'on hold'
+        job.key = hidden
+
+        job.save()
+
+
+
+
+
+    # #GETTING READY...
+    # form = QuoteForm(request.POST, request.FILES)
+    # form.is_valid()
+    # form = form.clean()
+    # quote, created = Quote.objects.get_or_create(key=form['hidden'])
+    # job = Job()
+
+    # #FILL QUOTE FIELDS
+    # if(created):
+    #     quote.key = form['hidden']
+    #     quote.client = form['client']
+    #     quote.date_time_code = form['date']
+    #     quote.total_price = form['showCost']
+    #     quote.job_number = form['jobs']
+    #     quote.status = 'on hold'
+    
+    # #FILL JOB FIELDS
+    # job.client = form['client']
+    # job.date_time_code = form['date']
+    # job.material = form['material']
+    # job.layers = form['layerThickness']
+    # job.infill = form['infill']
+    # job.supports = form['supports']
+    # job.speed = form['speed']
+    # job.print_time = form['time']
+    # job.weight = form['weight']
+    # job.number_copies = form['quantity']
+    # job.status = 'on hold'
+    # job.key = form['hidden']
+
+    # #CREATE DIRECTORY FOR FILES
+    # try:
+    #     os.mkdir('frigg/jobs/' + job.client)
+    #     os.mkdir('frigg/jobs/' + job.client + '/model')
+    #     os.mkdir('frigg/jobs/' + job.client + '/model_orientation')
+    #     os.mkdir('frigg/jobs/' + job.client + '/pdf')
+    # except OSError:
+    #     pass
+    # #END
+
+    # path = 'frigg/jobs/' + job.client + '/model/' + request.FILES['printFile1'].name
+    # handle_uploaded_file(request.FILES['printFile1'], path)
+    # job.model_path = path
+
+    # path = 'frigg/jobs/' + job.client + '/model_orientation/' + request.FILES['orientationFile1'].name
+    # handle_uploaded_file(request.FILES['orientationFile1'], path)
+    # job.model_orientation_path = path
+
+    # #SAVE
+    # quote.save()
+    # job.save()
+
+    # #DELETE NOT USEFUL QUOTES AND CALCULATE JOB NUMBER
+    # quotesCreated = Quote.objects.filter(key = form['hidden'])
+    # iterQuotesCreated = iter(quotesCreated)
+    # if(len(quotesCreated) > 1):
+    #     next(iterQuotesCreated)
+    #     for quoteCreated in iterQuotesCreated:
+    #         quoteCreated.delete()
 
     #SEND CONFIRMATION EMAIL
     #send_email()
@@ -159,9 +263,9 @@ def getJobs(request):
     return render(request, 'frigg/Job_List.html', context)
 
 def handle_uploaded_file(f, path):
-    with open(path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+    with codecs.open(path, 'wb+', encoding='UTF-8') as destination:
+        #for chunk in f.chunks():
+        destination.write(f)
 
 def send_email():
     send_mail(

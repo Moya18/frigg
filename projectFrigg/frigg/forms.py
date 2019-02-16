@@ -16,7 +16,6 @@ class QuoteForm(forms.Form):
     delivery = forms.CharField()
     showCost = forms.CharField()
     hidden = forms.CharField()
-    jobs = forms.CharField()
 
 class ClientForm(forms.Form):
     name = forms.CharField()
