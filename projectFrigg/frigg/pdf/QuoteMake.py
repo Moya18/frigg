@@ -128,11 +128,10 @@ def run(quote_client, quote_id, date, Prints):
 
 
     with open("Quote_" + str(quote_id) + ".tex", "w") as text_file:
-        
         text_file.write(OutFile)
     os.system("pdflatex " + "Quote_" + str(quote_id) + ".tex")
     mainPath = os.sys.path[0]
-    os.rename(mainPath + '/' + "Quote_" + str(quote_id) + ".pdf", mainPath + '/frigg/jobs/' + quote_client + '/pdf/' + "Quote_" + str(quote_id) + ".pdf")
+    os.rename(mainPath + '/' + "Quote_" + str(quote_id) + ".pdf", mainPath + '/frigg/quotes/quote' + str(quote_id) + '/' + quote_client + '/pdf/' + "Quote_" + str(quote_id) + ".pdf")
     os.remove("Quote_" + str(quote_id) + ".aux")
     os.remove("Quote_" + str(quote_id) + ".log")
     os.remove("Quote_" + str(quote_id) + ".out")

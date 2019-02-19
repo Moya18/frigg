@@ -44,10 +44,9 @@ def createQuote(request):
     data = json.loads(request.body)
     fields = 18
     job_number = int(len(data) / fields) #IMPORTANT!!! NUMBER OF FIELDS IN EACH FORM, CHANGE IF FIELDS ARE ADDED OR SUBSTRACTED
-
+    print(job_number, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     #GETTING READY
     quote = Quote()
-    job = Job()
     
     client = data[1]['value']
     date = data[2]['value']
@@ -66,6 +65,7 @@ def createQuote(request):
     quote.save()
 
     for i in range(job_number):
+        job = Job()
         x = i * fields #ITERATION NUMBER TO SEPARATE FORMS
         #ORDER OF FIELDS ARE IMPORTANT!!
         material = data[x + 3]['value']
@@ -97,6 +97,10 @@ def createQuote(request):
         except OSError:
             pass
         try:
+            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/pdf')
+        except OSError:
+            pass
+        try:
             os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs')
         except OSError:
             pass
@@ -110,10 +114,6 @@ def createQuote(request):
             pass
         try:
             os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/model_orientation')
-        except OSError:
-            pass
-        try:
-            os.mkdir('frigg/quotes/quote' + str(quote.id) + '/' + client + '/jobs/job' + str(i) + '/pdf')
         except OSError:
             pass
         #END
@@ -142,6 +142,23 @@ def createQuote(request):
 
         job.save()
 
+    jobs = []
+    printFile = data[14]['value'].split('\\')[-1]
+    orientationFile = data[15]['value'].split('\\')[-1]
+    cost = data[12]['value']
+    quantity = data[10]['value']
+    jobsCreated = Job.objects.filter(key = hidden)
+    for job in jobsCreated:
+        array = []
+        array.append(job.material)
+        array.append(job.layers)
+        array.append("colour") #Not a field in DB yet
+        array1 = []
+        array2 = [printFile, int(cost), int(quantity)]
+        array1.append(array2)
+        array.append(array1)
+        jobs.append(array)
+    QuoteMake.run(quote.client, quote.id, quote.date_time_code, jobs)
 
 
 
