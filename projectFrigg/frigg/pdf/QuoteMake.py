@@ -5,8 +5,10 @@ import os
 #import latex
 
 def Config():
-    Out=r"\UseRawInputEncoding" + "\n"
-    Out+=r"\documentclass[11pt]{report}" + "\n"
+    # Out=r"\UseRawInputEncoding" + "\n"
+    # Out+=r"\documentclass[11pt]{report}" + "\n"
+    
+    Out=r"\documentclass[11pt]{report}" + "\n"
     Out+=r"\usepackage[T1]{fontenc}" + "\n"
     Out+=r"\usepackage{uarial}" + "\n"
     Out+=r"\renewcommand{\familydefault}{\sfdefault}" + "\n"

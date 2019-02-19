@@ -25,7 +25,7 @@ SECRET_KEY = '&t%)dl266xx$a_-h6f-gb6=@4p7=0_4-57*q(uf4cs!^d9=+67'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['friggtest-env.zh2tekz2w2.us-east-1.elasticbeanstalk.com']
 
 
 # Application definition
